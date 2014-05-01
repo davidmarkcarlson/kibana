@@ -305,7 +305,9 @@ function (angular, app, _, kbn, moment) {
         request,
         boolQuery,
         queries,
-        sort;
+        sort,
+        error_handler,
+        error;
 
       $scope.panel.error =  false;
 
@@ -331,6 +333,16 @@ function (angular, app, _, kbn, moment) {
 
       queries = querySrv.getQueryObjs($scope.panel.queries.ids);
 
+      // reset and return if there are no queries that are not empty strings
+      if(_.filter(queries, function (q) {return (q.query !== '');}).length === 0) {
+        $scope.panelMeta.loading = false;
+        $scope.panel.offset = 0;
+        $scope.hits = 0;
+        $scope.data = [];
+        $scope.current_fields = [];
+        return;
+      }
+
       boolQuery = $scope.ejs.BoolQuery();
       _.each(queries,function(q) {
         boolQuery = boolQuery.should(querySrv.toEjsObj(q));
@@ -352,8 +364,13 @@ function (angular, app, _, kbn, moment) {
 
       $scope.populate_modal(request);
 
+      // Error handler
+      error_handler = function (response_data) {
+        error = $scope.parse_error(response_data);
+      };
+
       // Populate scope when we have results
-      request.doSearch().then(function(results) {
+      request.doSearch(undefined, error_handler).then(function(results) {
         $scope.panelMeta.loading = false;
 
         if(_segment === 0) {
@@ -364,6 +381,10 @@ function (angular, app, _, kbn, moment) {
           query_id = $scope.query_id = new Date().getTime();
         }
 
+        // Check for error caught by callback
+        if(error) {
+          $scope.panel.error = error;
+        }
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
           $scope.panel.error = $scope.parse_error(results.error);

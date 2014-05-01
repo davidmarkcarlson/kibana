@@ -105,7 +105,7 @@ function (angular, config, _) {
 
     // This is whoafully incomplete, but will do for now
     $scope.parse_error = function(data) {
-      var _error = data.match("nested: (.*?);");
+      var _error = data.match("nested: (.*?);") || data.match("(HTTP ERROR: \\d+)");
       return _.isNull(_error) ? data : _error[1];
     };
 

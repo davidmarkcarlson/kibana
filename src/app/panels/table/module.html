@@ -122,7 +122,7 @@
           </div>
           <div class="span8" style="text-align:center">
             <strong>{{panel.offset}}</strong> to <strong>{{panel.offset + data.slice(panel.offset,panel.offset+panel.size).length}}</strong>
-            <small> of {{data.length}} available for paging</small>
+            <small> of {{data.length}} available for paging ({{hits || 0}} total)</small>
           </div>
           <div class="span1" style="text-align:left">
             <i ng-click="panel.offset = (panel.offset + panel.size)" ng-show="data.length > panel.offset+panel.size" class='icon-arrow-right pointer'></i>
@@ -190,7 +190,7 @@
           </div>
           <div class="span4" style="text-align:center">
             <strong>{{panel.offset}}</strong> to <strong>{{panel.offset + data.slice(panel.offset,panel.offset+panel.size).length}}</strong>
-            <small> of {{data.length}} available for paging</small>
+            <small> of {{data.length}} available for paging ({{hits || 0}} total)</small>
           </div>
           <div class="span1" style="text-align:left">
             <i ng-click="panel.offset = (panel.offset + panel.size)" ng-show="data.length > panel.offset+panel.size" class='icon-arrow-right pointer'></i>
